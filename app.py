@@ -10,3 +10,16 @@ app.config['SQLALCHEMY_ECHO'] = True
 
 connect_db(app)
 db.create_all()
+
+
+@app.get('/')
+def home():
+    return redirect('/users')
+
+@app.get('/users')
+def users():
+    users = User.query.all()
+
+    return render_template('users.html', users = users)
+
+# 'users/<int:user_id>'
