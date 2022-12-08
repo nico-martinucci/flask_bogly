@@ -24,3 +24,24 @@ class User(db.Model):
     last_name = db.Column(db.String(15),
                           nullable=True)
     image_url = db.Column(db.Text, default = DEFAULT_IMAGE_URL)
+
+    posts = db.relationship('Post', backref='author')
+
+class Post(db.Model):
+    """model for individual blog posts"""
+
+    __tablename__ = "posts"
+
+    id = db.Column(db.Integer,
+                   primary_key=True,
+                   autoincrement=True)
+    title = db.Column(db.String(70),
+                      nullable=False,
+                      unique=True)
+    content = db.Column(db.Text,
+                        nullable=False)
+    created_at = db.Column(db.DateTime,
+                           nullable=False,
+                           default=db.func.now)
+    created_by = db.Column(db.Integer,
+                           db.ForeignKey("users.id"))

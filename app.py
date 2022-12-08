@@ -48,6 +48,7 @@ def add_new_user():
     db.session.commit()
 
     flash("User Successfully Added!")
+
     return redirect('/users')
 
 @app.get('/users/<int:user_id>')
@@ -79,6 +80,8 @@ def edit_user(user_id):
     db.session.add(user)
     db.session.commit()
 
+    flash("User Successfully Edited!")
+
     return redirect(f'/users/{user_id}')
 
 @app.post('/users/<int:user_id>/delete')
@@ -87,6 +90,8 @@ def delete_user(user_id):
     user = User.query.get(user_id)
     db.session.delete(user)
     db.session.commit()
+
+    flash("User Successfully Edited!")
 
     return redirect('/users')
 
