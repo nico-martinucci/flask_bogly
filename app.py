@@ -49,3 +49,24 @@ def get_user_by_id(user_id):
     return render_template('user_detail.html', user=user)
 
 
+@app.get('/users/<int:user_id>/edit')
+def show_edit_user_form(user_id):
+
+    user = User.query.get(user_id)
+
+    return render_template('edit_user.html', user=user)
+
+@app.post('/users/<int:user_id>/edit')
+def edit_user(user_id):
+
+    if request.form['edit-buttons'] == 'save':
+        user = User.query.get(user_id)
+
+        user.first_name = request.form['first-name']
+        user.last_name = request.form['last-name']
+        user.image_url= request.form['img-url']
+
+        db.session.add(user)
+        db.session.commit()
+
+    return redirect(f'/users/{user_id}')

@@ -2,6 +2,10 @@
 block content%}
 <img style="width: 200px; height: 200px" src="{{user.image_url}}" alt="" />
 <h1>{{user.first_name}} {{user.last_name}}</h1>
-<button id="edit">Edit</button>
-<button id="delete">Delete</button>
+<form action="/users/{{user.id}}/edit">
+  <button id="edit">Edit</button>
+</form>
+<form action="">
+  <button id="delete">Delete</button>
+</form>
 {% endblock %}

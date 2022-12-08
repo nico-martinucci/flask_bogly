@@ -1,14 +1,16 @@
 {% extends 'base.html' %} {% block title %}Edit a user{% endblock %} {% block
 content%}
-<h1>Create a user</h1>
+<h1>Edit a user</h1>
 <form action="" method="post">
   <p>First Name</p>
-  <input type="text" name="first-name" />
+  <input type="text" name="first-name" value="{{user.first_name}}" />
   <p>Last Name</p>
-  <input type="text" name="last-name" />
+  <input type="text" name="last-name" value="{{user.last_name}}" />
   <p>Image URL</p>
-  <input type="text" name="img-url" />
-  <button id="cancel">Cancel</button>
-  <button id="save">Save</button>
+  <input type="text" name="img-url" value="{{user.image_url}}" />
+  <button class="btn btn-outline-info" name="edit-buttons" value="cancel">
+    Cancel
+  </button>
+  <button class="btn btn-success" name="edit-buttons" value="save">Save</button>
 </form>
 {% endblock %}
