@@ -31,7 +31,9 @@ class UserViewTestCase(TestCase):
         # As you add more models later in the exercise, you'll want to delete
         # all of their records before each test just as we're doing with the
         # User model below.
+        Post.query.delete()
         User.query.delete()
+
 
         self.client = app.test_client()
 
@@ -47,7 +49,6 @@ class UserViewTestCase(TestCase):
             image_url=None,
         )
 
-
         db.session.add_all([test_user, second_user])
         db.session.commit()
 
@@ -59,6 +60,7 @@ class UserViewTestCase(TestCase):
 
         db.session.add(test_post)
         db.session.commit()
+
 
         # We can hold onto our test_user's id by attaching it to self (which is
         # accessible throughout this test class). This way, we'll be able to
@@ -77,7 +79,7 @@ class UserViewTestCase(TestCase):
         db.session.rollback()
 
     def test_list_users(self):
-        """cofirms that our users page returns a page with a list of users."""
+        """Cofirms that our users page returns a page with a list of users."""
         with self.client as c:
             resp = c.get("/users")
             self.assertEqual(resp.status_code, 200)
@@ -87,7 +89,7 @@ class UserViewTestCase(TestCase):
 
     # when user is clicked, do we get the right user? do we see their posts?
     def test_user_page(self):
-        """ confirms that our individual users page shows the correct user and information"""
+        """ Confirms that our individual users page shows the correct user and information"""
         with self.client as c:
             resp = c.get(f"/users/{self.user_id}")
             self.assertEqual(resp.status_code, 200)
@@ -97,7 +99,7 @@ class UserViewTestCase(TestCase):
 
     # when "add user" is clicked, do you get the add user form?
     def test_add_user_form(self):
-        """ comfirms that our new user page shows the create user page"""
+        """ Comfirms that our new user page shows the create user page"""
         with self.client as c:
             resp = c.get("/users/new")
             self.assertEqual(resp.status_code, 200)
@@ -106,7 +108,7 @@ class UserViewTestCase(TestCase):
 
     # when new user submitted, do they end up in database? do we land on "/users"?
     def test_adding_user(self):
-        """" tests adding a new user and confirms that the input data is on that we are
+        """" Tests adding a new user and confirms that the input data is on that we are
         redirected back to the users page and that our new user is present."""
         with self.client as c:
             data={
@@ -122,7 +124,7 @@ class UserViewTestCase(TestCase):
 
     # when "edit user" is clicked, do you get the edit user form? do the input fields get filled?
     def test_edit_user(self):
-        """ tests if the edit user route displays the correct page """
+        """ Tests if the edit user route displays the correct page """
 
         with self.client as c:
             resp = c.get(f"/users/{self.user_id}/edit")
@@ -133,7 +135,7 @@ class UserViewTestCase(TestCase):
 
     # when "add post" is clicked, do we get the add post form
     def test_add_post(self):
-        """ tests if the add post route displays the correct page"""
+        """ Tests if the add post route displays the correct page"""
 
         with self.client as c:
             resp = c.get(f"/users/{self.user_id}/posts/new")
@@ -144,9 +146,9 @@ class UserViewTestCase(TestCase):
 
     # when we "edit post" do we get the edit post form? do the input fields get filled?
     def test_edit_post(self):
-        """ tests if the edit post route displays the correct page and properly
+        """ Tests if the edit post route displays the correct page and properly
         populates the form data """
-        
+
         with self.client as c:
             resp = c.get(f"/posts/{self.post_id}/edit")
             self.assertEqual(resp.status_code, 200)
@@ -157,9 +159,9 @@ class UserViewTestCase(TestCase):
 
     # when we delete a post does it no longer show on the user page
     def test_delete_post(self):
-        """ tests if a post actually gets deleted when the delete post route
+        """ Tests if a post actually gets deleted when the delete post route
         is accessed """
-
+        breakpoint()
         with self.client as c:
             resp = c.post(f"/posts/{self.post_id}/delete", follow_redirects=True)
             self.assertEqual(resp.status_code, 200)
@@ -167,4 +169,3 @@ class UserViewTestCase(TestCase):
             html = resp.get_data(as_text=True)
             self.assertIn(f"<h1>{self.first_name} {self.last_name}</h1>", html)
             self.assertNotIn(f"{self.post_title}", html)
-            

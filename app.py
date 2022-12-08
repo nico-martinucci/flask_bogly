@@ -18,25 +18,25 @@ db.create_all()
 
 @app.get('/')
 def home():
-    """ redirects to to users page"""
+    """ Redirects to to users page"""
     return redirect('/users')
 
 @app.get('/users')
 def users():
-    """ returns users page with list of users"""
+    """ Returns users page with list of users"""
     users = User.query.all()
 
     return render_template('users.html', users = users)
 
 @app.get('/users/new')
 def new_user():
-    """ returns new user page with form for adding a user"""
+    """ Returns new user page with form for adding a user"""
 
     return render_template('new_user_form.html')
 
 @app.post('/users/new')
 def add_new_user():
-    """ posts new user form data and redirects to users"""
+    """ Posts new user form data and redirects to users"""
 
     first = request.form['first-name']
     last = request.form['last-name']
@@ -53,7 +53,7 @@ def add_new_user():
 
 @app.get('/users/<int:user_id>')
 def get_user_by_id(user_id):
-    """ returns specific user page and populates with user data"""
+    """ Returns specific user page and populates with user data"""
 
     user = User.query.get(user_id)
 
@@ -62,14 +62,14 @@ def get_user_by_id(user_id):
 
 @app.get('/users/<int:user_id>/edit')
 def show_edit_user_form(user_id):
-    """ returns edit user page given the user_id variable"""
+    """ Returns edit user page given the user_id variable"""
     user = User.query.get(user_id)
 
     return render_template('edit_user.html', user=user)
 
 @app.post('/users/<int:user_id>/edit')
 def edit_user(user_id):
-    """ posts edited user data and redirects to that user's page with edited data"""
+    """ Posts edited user data and redirects to that user's page with edited data"""
 
     user = User.query.get(user_id)
 
@@ -86,7 +86,7 @@ def edit_user(user_id):
 
 @app.post('/users/<int:user_id>/delete')
 def delete_user(user_id):
-    """ deletes user at user_id argument and redirects to users page"""
+    """ Deletes user at user_id argument and redirects to users page"""
     user = User.query.get(user_id)
     db.session.delete(user)
     db.session.commit()
@@ -97,14 +97,14 @@ def delete_user(user_id):
 
 @app.get('/users/<int:user_id>/posts/new')
 def show_new_post_form(user_id):
-    """ show form to create new post """
+    """ Show form to create new post """
     user = User.query.get(user_id)
 
     return render_template('new_post.html', user = user)
 
 @app.post('/users/<int:user_id>/posts/new')
 def submit_new_post(user_id):
-    """ submit form data from new post """
+    """ Submit form data from new post """
     title = request.form['title']
     content = request.form['content']
 
@@ -117,21 +117,21 @@ def submit_new_post(user_id):
 
 @app.get('/posts/<int:post_id>')
 def display_post(post_id):
-    """ display post given the post_id argument """
+    """ Display post given the post_id argument """
     post = Post.query.get(post_id)
 
     return render_template('post_detail.html', post = post)
 
 @app.get('/posts/<int:post_id>/edit')
 def edit_post(post_id):
-    """ display edit post page given post_id argument"""
+    """ Display edit post page given post_id argument"""
     post = Post.query.get(post_id)
 
     return render_template('edit_post.html', post = post)
 
 @app.post('/posts/<int:post_id>/edit')
 def submit_edit_post(post_id):
-    """ submit form data to edit existing post"""
+    """ Submit form data to edit existing post"""
     edited_post = Post.query.get(post_id)
     edited_post.title = request.form['title']
     edited_post.content = request.form['content']
@@ -143,7 +143,7 @@ def submit_edit_post(post_id):
 
 @app.post('/posts/<int:post_id>/delete')
 def delete_post(post_id):
-    """ delete post given the post_id argument"""
+    """ Delete post given the post_id argument"""
     post = Post.query.get(post_id)
     user_id = post.author.id
     db.session.delete(post)
