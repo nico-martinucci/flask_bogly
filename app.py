@@ -108,7 +108,7 @@ def submit_new_post(user_id):
     title = request.form['title']
     content = request.form['content']
 
-    new_post = Post(title = title , content = content, created_by = user_id)
+    new_post = Post(title = title , content = content, user_id = user_id)
     db.session.add(new_post)
     db.session.commit()
     breakpoint()
