@@ -1,11 +1,26 @@
-{% extends 'base.html' %} {% block title %}User Detail Page{% endblock %} {%
-block content%}
+{% extends 'base.html' %} 
+{% block title %}User Detail Page{% endblock %} 
+{% block content %}
+
+{% for msg in get_flashed_messages()%}
+<p>{{msg}}</p>
+{%endfor%}
+
 <img style="width: 200px; height: 200px" src="{{user.image_url}}" alt="" />
 <h1>{{user.first_name}} {{user.last_name}}</h1>
-<form action="/users/{{user.id}}/edit">
-  <button id="edit">Edit</button>
-</form>
+
+<a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit</a>
+
 <form action="/users/{{user.id}}/delete" method="POST">
   <button id="delete">Delete</button>
 </form>
+
+<h2>Posts</h2>
+<ul>
+  {% for post in user.posts%}
+    <li><a href="/posts/{{post.id}}">{{post.title}}</a></li>
+  {%endfor%}
+</ul>
+<a class="btn btn-primary" href="/users/{{user.id}}/posts/new">Add Post</a>
+
 {% endblock %}

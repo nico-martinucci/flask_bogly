@@ -1,0 +1,17 @@
+{% extends 'base.html' %} 
+{% block title %}User Detail Page{% endblock %} 
+{% block content %}
+
+<h1>Edit Post</h1>
+<form action="" method="POST">
+    <label for="title">Title 
+        <input type="text" name="title" value="{{post.title}}">
+    </label>
+    <label for="content">Content 
+        <input type="text" name="content" value="{{post.content}}">
+    </label>
+    <a class="btn btn-outline-info" href="/users/{{post.author.id}}">Cancel</a>
+    <button class="btn btn-success">Edit</button>
+</form>
+
+{% endblock %}
