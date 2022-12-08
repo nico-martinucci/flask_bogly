@@ -47,6 +47,12 @@ class UserViewTestCase(TestCase):
             image_url=None,
         )
 
+        test_post = Post(
+            title="test_post",
+            content="this is a test post",
+            user_id=test_user.id
+        )
+
         db.session.add_all([test_user, second_user])
         db.session.commit()
 
@@ -55,6 +61,12 @@ class UserViewTestCase(TestCase):
         # rely on this user in our tests without needing to know the numeric
         # value of their id, since it will change each time our tests are run.
         self.user_id = test_user.id
+        self.first_name = test_user.first_name
+        self.last_name = test_user.last_name
+
+        self.post_id = test_post.id
+        self.post_title = test_post.title
+        self.post_content = test_post.content
 
     def tearDown(self):
         """Clean up any fouled transaction."""
@@ -69,7 +81,7 @@ class UserViewTestCase(TestCase):
             self.assertIn("test1_first", html)
             self.assertIn("test1_last", html)
 
-    # when user is clicked, do we get the right user?
+    # when user is clicked, do we get the right user? do we see their posts?
     def test_user_page(self):
         """ confirms that our individual users page shows the correct user and information"""
         with self.client as c:
@@ -77,6 +89,7 @@ class UserViewTestCase(TestCase):
             self.assertEqual(resp.status_code, 200)
             html = resp.get_data(as_text=True)
             self.assertIn("<h1>test1_first test1_last</h1>", html)
+            # add if we see the user's posts
 
     # when "add user" is clicked, do you get the add user form?
     def test_add_user_form(self):
@@ -104,3 +117,50 @@ class UserViewTestCase(TestCase):
             self.assertIn("Robot McRobot</a>", html)
 
     # when "edit user" is clicked, do you get the edit user form? do the input fields get filled?
+    def test_edit_user(self):
+        """ tests if the edit user route displays the correct page """
+
+        with self.client as c:
+            resp = c.get(f"/users/{self.user_id}/edit")
+            self.assertEqual(resp.status_code, 200)
+
+            html = resp.get_data(as_text=True)
+            self.assertIn("<h1>Edit a user</h1>", html)
+
+    # when "add post" is clicked, do we get the add post form
+    def test_add_post(self):
+        """ tests if the add post route displays the correct page"""
+
+        with self.client as c:
+            resp = c.get(f"/users/{self.user_id}/posts/new")
+            self.assertEqual(resp.status_code, 200)
+
+            html = resp.get_data(as_text=True)
+            self.assertIn(f"<h1>Add Post for {self.first_name} {self.last_name}</h1>", html)
+
+    # when we "edit post" do we get the edit post form? do the input fields get filled?
+    def test_edit_post(self):
+        """ tests if the edit post route displays the correct page and properly
+        populates the form data """
+
+        with self.client as c:
+            resp = c.get(f"/posts/{self.post_id}/edit")
+            self.assertEqual(resp.status_code, 200)
+
+            html = resp.get_data(as_text=True)
+            self.assertIn(f'value="{self.post_title}"', html)
+            self.assertIn(f'value="{self.post_content}"', html)
+
+    # when we delete a post does it no longer show on the user page
+    def test_delete_post(self):
+        """ tests if a post actually gets deleted when the delete post route
+        is accessed """
+
+        with self.client as c:
+            resp = c.post(f"/posts/{self.post_id}/delete", follow_redirects=True)
+            self.assertEqual(resp.status_code, 200)
+
+            html = resp.get_data(as_text=True)
+            self.assertIn(f"<h1>{self.first_name} {self.last_name}</h1>", html)
+            self.assertNotIn(f"{self.post_title}", html)
+            
