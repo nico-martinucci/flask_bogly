@@ -61,6 +61,7 @@ class UserViewTestCase(TestCase):
         db.session.rollback()
 
     def test_list_users(self):
+        """cofirms that our users page returns a page with a list of users."""
         with self.client as c:
             resp = c.get("/users")
             self.assertEqual(resp.status_code, 200)
@@ -70,6 +71,7 @@ class UserViewTestCase(TestCase):
 
     # when user is clicked, do we get the right user?
     def test_user_page(self):
+        """ confirms that our individual users page shows the correct user and information"""
         with self.client as c:
             resp = c.get(f"/users/{self.user_id}")
             self.assertEqual(resp.status_code, 200)
@@ -78,14 +80,17 @@ class UserViewTestCase(TestCase):
 
     # when "add user" is clicked, do you get the add user form?
     def test_add_user_form(self):
+        """ comfirms that our new user page shows the create user page"""
         with self.client as c:
             resp = c.get("/users/new")
             self.assertEqual(resp.status_code, 200)
             html = resp.get_data(as_text=True)
             self.assertIn("<h1>Create a user</h1>", html)
-            
+
     # when new user submitted, do they end up in database? do we land on "/users"?
     def test_adding_user(self):
+        """" tests adding a new user and confirms that the input data is on that we are
+        redirected back to the users page and that our new user is present."""
         with self.client as c:
             data={
                     'first-name': 'Robot',

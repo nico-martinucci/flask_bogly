@@ -23,7 +23,4 @@ class User(db.Model):
                            nullable=True)
     last_name = db.Column(db.String(15),
                           nullable=True)
-    image_url = db.Column(db.String())
-    active = db.Column(db.Boolean(),
-                         nullable=False,
-                         default=True)
+    image_url = db.Column(db.Text, default = DEFAULT_IMAGE_URL)
