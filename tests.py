@@ -67,3 +67,8 @@ class UserViewTestCase(TestCase):
             html = resp.get_data(as_text=True)
             self.assertIn("test1_first", html)
             self.assertIn("test1_last", html)
+    
+    # when user is clicked, do we get the right user?
+    # when "add user" is clicked, do you get the add user form?
+    # when new user submitted, do they end up in database? do we land on "/users"?
+    # when "edit user" is clicked, do you get the edit user form? do the input fields get filled?

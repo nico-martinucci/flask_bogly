@@ -70,3 +70,13 @@ def edit_user(user_id):
         db.session.commit()
 
     return redirect(f'/users/{user_id}')
+
+@app.post('/users/<int:user_id>/delete')
+def delete_user(user_id):
+
+    user = User.query.get(user_id)
+    db.session.delete(user)
+    db.session.commit()
+
+    return redirect('/users')
+

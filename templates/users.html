@@ -3,11 +3,14 @@
 <h1>Users</h1>
 <ul id="users">
   {% for user in users %}
-  <li>
-    <a href="/users/{{user.id}}">{{user.first_name}} {{user.last_name}}</a>
-  </li>
+    {% if user.active %}
+      <li>
+        <a href="/users/{{user.id}}">{{user.first_name}} {{user.last_name}}</a>
+      </li>
+    {% endif %}
   {% endfor %}
 </ul>
-
-<button>Add User</button>
+<form action="/users/new">
+  <button>Add User</button>
+</form>
 {% endblock %}
