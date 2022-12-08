@@ -76,9 +76,6 @@ class UserViewTestCase(TestCase):
             html = resp.get_data(as_text=True)
             self.assertIn("<h1>test1_first test1_last</h1>", html)
 
-
-
-
     # when "add user" is clicked, do you get the add user form?
     def test_add_user_form(self):
         with self.client as c:
@@ -86,6 +83,7 @@ class UserViewTestCase(TestCase):
             self.assertEqual(resp.status_code, 200)
             html = resp.get_data(as_text=True)
             self.assertIn("<h1>Create a user</h1>", html)
+            
     # when new user submitted, do they end up in database? do we land on "/users"?
     def test_adding_user(self):
         with self.client as c:
