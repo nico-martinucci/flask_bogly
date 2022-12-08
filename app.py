@@ -2,7 +2,7 @@
 
 from flask import Flask, request, redirect, render_template, flash
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User
+from models import db, connect_db, User, Post
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///blogly'
@@ -91,7 +91,65 @@ def delete_user(user_id):
     db.session.delete(user)
     db.session.commit()
 
-    flash("User Successfully Edited!")
+    flash("User Successfully Deleted!")
 
     return redirect('/users')
+
+@app.get('/users/<int:user_id>/posts/new')
+def show_new_post_form(user_id):
+    """ show form to create new post """
+    user = User.query.get(user_id)
+
+    return render_template('new_post.html', user = user)
+
+@app.post('/users/<int:user_id>/posts/new')
+def submit_new_post(user_id):
+    """ submit form data from new post """
+    title = request.form['title']
+    content = request.form['content']
+
+    new_post = Post(title = title , content = content, created_by = user_id)
+    db.session.add(new_post)
+    db.session.commit()
+    breakpoint()
+    flash("Post Successfully Added!")
+    return redirect(f'/users/{user_id}')
+
+@app.get('/posts/<int:post_id>')
+def display_post(post_id):
+    """ display post given the post_id argument """
+    post = Post.query.get(post_id)
+
+    return render_template('post_detail.html', post = post)
+
+@app.get('/posts/<int:post_id>/edit')
+def edit_post(post_id):
+    """ display edit post page given post_id argument"""
+    post = Post.query.get(post_id)
+
+    return render_template('edit_post.html', post = post)
+
+@app.post('/posts/<int:post_id>/edit')
+def submit_edit_post(post_id):
+    """ submit form data to edit existing post"""
+    edited_post = Post.query.get(post_id)
+    edited_post.title = request.form['title']
+    edited_post.content = request.form['content']
+
+    db.session.commit()
+
+    flash("Post Successfully Edited!")
+    return redirect(f'/posts/{post_id}')
+
+@app.post('/posts/<int:post_id>/delete')
+def delete_post(post_id):
+    """ delete post given the post_id argument"""
+    post = Post.query.get(post_id)
+    user_id = post.author.id
+    db.session.delete(post)
+    db.session.commit()
+
+    flash("Post Successfully Deleted!")
+    return redirect(f'/users/{user_id}')
+
 
