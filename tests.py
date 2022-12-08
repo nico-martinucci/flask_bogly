@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from app import app, db
-from models import DEFAULT_IMAGE_URL, User, connect_db
+from models import DEFAULT_IMAGE_URL, User, Post, connect_db
 
 # Let's configure our app to use a different database for tests
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql:///blogly_test"
@@ -47,13 +47,17 @@ class UserViewTestCase(TestCase):
             image_url=None,
         )
 
+
+        db.session.add_all([test_user, second_user])
+        db.session.commit()
+
         test_post = Post(
             title="test_post",
             content="this is a test post",
             user_id=test_user.id
         )
 
-        db.session.add_all([test_user, second_user])
+        db.session.add(test_post)
         db.session.commit()
 
         # We can hold onto our test_user's id by attaching it to self (which is
@@ -142,7 +146,7 @@ class UserViewTestCase(TestCase):
     def test_edit_post(self):
         """ tests if the edit post route displays the correct page and properly
         populates the form data """
-
+        
         with self.client as c:
             resp = c.get(f"/posts/{self.post_id}/edit")
             self.assertEqual(resp.status_code, 200)
