@@ -10,7 +10,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SECRET_KEY'] = 'tacosandburritos'
 
-debug = DebugToolbarExtension(app)
+# debug = DebugToolbarExtension(app)
 
 connect_db(app)
 db.create_all()
@@ -77,7 +77,6 @@ def edit_user(user_id):
     user.last_name = request.form['last-name']
     user.image_url= request.form['img-url']
 
-    db.session.add(user)
     db.session.commit()
 
     flash("User Successfully Edited!")
@@ -88,7 +87,13 @@ def edit_user(user_id):
 def delete_user(user_id):
     """ Deletes user at user_id argument and redirects to users page"""
     user = User.query.get(user_id)
+    posts = user.posts
+
     db.session.delete(user)
+
+    for post in posts:
+        db.session.delete(post)
+
     db.session.commit()
 
     flash("User Successfully Deleted!")
@@ -111,7 +116,7 @@ def submit_new_post(user_id):
     new_post = Post(title = title , content = content, user_id = user_id)
     db.session.add(new_post)
     db.session.commit()
-    breakpoint()
+
     flash("Post Successfully Added!")
     return redirect(f'/users/{user_id}')
 
