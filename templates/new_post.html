@@ -1,21 +1,29 @@
-{% extends 'base.html' %} 
-{% block title %}User Detail Page{% endblock %} 
-{% block content %}
+{% extends 'base.html' %} {% block title %}User Detail Page{% endblock %} {%
+block content %}
 
 <h1>Add Post for {{user.first_name}} {{user.last_name}}</h1>
 <form action="" method="POST">
-    <div>
-        <label for="title">Title 
-            <input type="text" name="title">
-        </label>
-    </div>
-    <div>
-        <label for="content">Content 
-            <textarea name="content"></textarea>
-        </label>
-    </div>
-    <a class="btn btn-info" href="/users/{{user.id}}">Cancel</a>
-    <button class="btn btn-success">Add</button>
+  <div>
+    <label for="title"
+      >Title
+      <input type="text" name="title" />
+    </label>
+  </div>
+  <div>
+    <label for="content"
+      >Content
+      <textarea name="content"></textarea>
+    </label>
+  </div>
+  {% for tag in tags%}
+  <label for="{{tag.name}}" style="display: block"
+    ><input type="checkbox" value="{{tag.name}}" name="tags" />
+    {{tag.name}}</label
+  >
+  {% endfor %}
+  <br />
+  <a class="btn btn-info" href="/users/{{user.id}}">Cancel</a>
+  <button class="btn btn-success">Add</button>
 </form>
 
 {% endblock %}

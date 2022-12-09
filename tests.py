@@ -161,7 +161,7 @@ class UserViewTestCase(TestCase):
     def test_delete_post(self):
         """ Tests if a post actually gets deleted when the delete post route
         is accessed """
-        breakpoint()
+
         with self.client as c:
             resp = c.post(f"/posts/{self.post_id}/delete", follow_redirects=True)
             self.assertEqual(resp.status_code, 200)

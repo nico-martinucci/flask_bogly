@@ -2,7 +2,7 @@
 
 from flask import Flask, request, redirect, render_template, flash
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User, Post
+from models import db, connect_db, User, Post, Tag, PostTag
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///blogly'
@@ -104,18 +104,27 @@ def delete_user(user_id):
 def show_new_post_form(user_id):
     """ Show form to create new post """
     user = User.query.get(user_id)
+    tags = Tag.query.all()
 
-    return render_template('new_post.html', user = user)
+    return render_template('new_post.html', user = user, tags = tags)
 
 @app.post('/users/<int:user_id>/posts/new')
 def submit_new_post(user_id):
     """ Submit form data from new post """
     title = request.form['title']
     content = request.form['content']
+    tags_list = request.form.getlist('tags')
+
 
     new_post = Post(title = title , content = content, user_id = user_id)
     db.session.add(new_post)
     db.session.commit()
+
+    for tag in tags_list:
+        temp_tag = Tag.query.filter(Tag.name == tag).one()
+        breakpoint()
+        new_post.tags.append(temp_tag)
+        db.session.commit()
 
     flash("Post Successfully Added!")
     return redirect(f'/users/{user_id}')
@@ -130,6 +139,7 @@ def display_post(post_id):
 @app.get('/posts/<int:post_id>/edit')
 def edit_post(post_id):
     """ Display edit post page given post_id argument"""
+
     post = Post.query.get(post_id)
 
     return render_template('edit_post.html', post = post)
@@ -156,5 +166,35 @@ def delete_post(post_id):
 
     flash("Post Successfully Deleted!")
     return redirect(f'/users/{user_id}')
+
+@app.get('/tags')
+def display_tags():
+    """ Display tags page with list of current tags"""
+    tags = Tag.query.all()
+
+    return  render_template('tags.html', tags = tags)
+
+@app.get('/tags/new')
+def show_new_tag_form():
+    """ Show form page for creating a new tag """
+
+    return render_template('add_tag.html')
+
+@app.post('/tags/new')
+def create_new_tag():
+    """ Pull tag from form and create new tag in database """
+
+    tag_name = request.form['tag']
+    try:
+        new_tag = Tag(name = tag_name)
+        db.session.add(new_tag)
+        db.session.commit()
+
+        flash('Tag successfully added!')
+        return redirect('/tags')
+    except:
+        flash('This tag already exists. Please try another.')
+        return redirect('/tags/new')
+
 
 

@@ -1,6 +1,5 @@
 {% extends 'base.html' %} {% block title %}Users{% endblock %} {% block content
-%} 
-{% for msg in get_flashed_messages()%}
+%} {% for msg in get_flashed_messages()%}
 <p>{{msg}}</p>
 {%endfor%}
 <h1>Users</h1>
@@ -14,4 +13,5 @@
 <form action="/users/new">
   <button class="btn btn-primary">Add User</button>
 </form>
+<a href="/tags" class="btn btn-info">Tags</a>
 {% endblock %}

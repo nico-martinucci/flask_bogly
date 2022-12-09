@@ -1,0 +1,14 @@
+{% extends 'base.html' %} {% block title %}Users{% endblock %} {% block content
+%} {% for msg in get_flashed_messages()%}
+<p>{{msg}}</p>
+{%endfor%}
+<h1>Tags</h1>
+<ul id="tags">
+  {% for tag in tags %}
+  <li>
+    <a href="/tags/{{tag.id}}">{{tag.name}}</a>
+  </li>
+  {% endfor %}
+</ul>
+<a href="/tags/new" class="btn btn-primary">Add Tag</a>
+{% endblock %}
